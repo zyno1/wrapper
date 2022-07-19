@@ -16,9 +16,9 @@ std::size_t get_mem_usage(pid_t p) {
     if(in) {
         std::size_t r;
         std::string line;
-        for(int i = 0; i < 22 && std::getline(in, line, ' '); i++);
+        for(int i = 1; i < 23 && std::getline(in, line, ' '); i++);
         in >> r;
-        return r;
+        return r / 1000;
     }
     return 0;
 }
@@ -48,12 +48,12 @@ std::string build_cmd(int argc, char** argv) {
 }
 
 /**
- * wrap <Virt mem in KiB> <time in s> porgram + args
+ * wrap <Virt mem in MB> <time in s> porgram + args
  */
 int main(int argc, char** argv) {
     pid_t pid = fork();
 
-    std::size_t max_mem = std::stoll(argv[1]);
+    std::size_t max_mem = std::stoll(argv[1]) * 1000;
     std::size_t max_time = std::stoll(argv[2]);
 
     auto ts = std::chrono::steady_clock::now();
