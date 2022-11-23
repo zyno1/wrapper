@@ -81,12 +81,17 @@ int main(int argc, char** argv) {
             std::chrono::duration<double> dur = std::chrono::steady_clock::now() - ts;
 
             if(w == pid) {
-                std::cerr << build_cmd(argc, argv) << ", done, " << mem << ", " << dur.count() << "\n";
+                std::cerr << "\n";
+                if(WIFEXITED(wstatus))
+                    std::cerr << build_cmd(argc, argv) << ", done, " << mem << ", " << dur.count() << "\n";
+                else
+                    std::cerr << build_cmd(argc, argv) << ", err, " << mem << ", " << dur.count() << "\n";
                 return 0;
             }
             if(mem > max_mem) {
                 kill(pid, SIGINT);
                 w = waitpid(pid, &wstatus, 0);
+                std::cerr << "\n";
 
                 if(w == pid) {
                     std::cerr << build_cmd(argc, argv) << ", mem, " << mem << ", " << dur.count() << "\n";
@@ -100,6 +105,7 @@ int main(int argc, char** argv) {
             if(dur.count() > max_time) {
                 kill(pid, SIGINT);
                 w = waitpid(pid, &wstatus, 0);
+                std::cerr << "\n";
 
                 if(w == pid) {
                     std::cerr << build_cmd(argc, argv) << ", timeout, " << mem << ", " << dur.count() << "\n";
@@ -111,7 +117,7 @@ int main(int argc, char** argv) {
                 }
             }
 
-            usleep(10000); // 0.1s
+            usleep(1000); // 0.01s
         } while(true);
     }
     return 0;
