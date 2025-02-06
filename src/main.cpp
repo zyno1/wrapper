@@ -82,11 +82,14 @@ int main(int argc, char** argv) {
 
             if(w == pid) {
                 std::cerr << "\n";
-                if(WIFEXITED(wstatus))
+                if(WIFEXITED(wstatus)) {
                     std::cerr << build_cmd(argc, argv) << ", done, " << mem << ", " << dur.count() << "\n";
-                else
+                    return 0;
+                }
+                else {
                     std::cerr << build_cmd(argc, argv) << ", err, " << mem << ", " << dur.count() << "\n";
-                return 0;
+                    return 1;
+                }
             }
             if(mem > max_mem) {
                 kill(pid, SIGINT);
@@ -95,7 +98,7 @@ int main(int argc, char** argv) {
 
                 if(w == pid) {
                     std::cerr << build_cmd(argc, argv) << ", mem, " << mem << ", " << dur.count() << "\n";
-                    return 0;
+                    return 1;
                 }
                 else {
                     std::cerr << build_cmd(argc, argv) << ", mem err, " << mem << ", " << dur.count() << "\n";
@@ -109,7 +112,7 @@ int main(int argc, char** argv) {
 
                 if(w == pid) {
                     std::cerr << build_cmd(argc, argv) << ", timeout, " << mem << ", " << dur.count() << "\n";
-                    return 0;
+                    return 1;
                 }
                 else {
                     std::cerr << build_cmd(argc, argv) << ", timeout err, " << mem << ", " << dur.count() << "\n";
